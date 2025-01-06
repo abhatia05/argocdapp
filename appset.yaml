@@ -1,0 +1,39 @@
+---
+apiVersion: argoproj.io/v1alpha1
+kind: ApplicationSet
+metadata:
+  name: aws-quota-appset
+spec:
+  generators:
+  - list:
+      elements:
+      - env: dev
+  template:
+    metadata:
+      name: 'aws-quota-dev'
+      namespace: argoapp
+    spec:
+      destination:
+        name: 'https://kubernetes.default.svc'
+        namespace: argoapp
+      project: aws-quota
+      sources:
+        # set up the project 
+      - repoURL: https://github.com/abhatia05/k8s-test
+        targetRevision: main
+        ref: values
+        # helm chart for the tempo
+      - repoURL: https://github.com/cpwc/aws-quota-checker
+        path: charts/aws-quota-checker/
+        # targetRevision: 
+        helm:
+          valueFiles:
+          - $values/values-aws.yaml
+          ignoreMissingValueFiles: true
+        # value files for the helm chart
+      syncPolicy:
+        automated:
+          prune: false
+          selfHeal: true
+        syncOptions:
+        - CreateNamespace=true
