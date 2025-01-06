@@ -8,7 +8,7 @@ spec:
   - group: '*'
     kind: '*'
   destinations:
-  - namespace: default
+  - namespace: argoapp
     server: '*'
   sourceRepos:
   - https://github.com/cpwc/aws-quota-checker
